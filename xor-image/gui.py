@@ -14,8 +14,8 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from core import xor
 
+from core import xor
 
 pp = {}
 

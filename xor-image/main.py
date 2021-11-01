@@ -1,6 +1,7 @@
 import click
+
+from core import save, xor
 from gui import main as gui_main
-from core import xor, save
 from timer import Timer
 
 
@@ -15,13 +16,13 @@ def gui():
 
 
 @main.command()
-@click.argument("image")
-@click.argument("key_image")
-@click.argument("result_image")
-def cli(image, key_image, result_image):
+@click.argument("image_path")
+@click.argument("key_path")
+@click.argument("path_to_result")
+def cli(image_path, key_path, path_to_result):
     with Timer():
         click.echo("Encrypting.")
-        result = xor(image, key_image)
+        result_image = xor(image_path, key_path)
         click.echo("Encrypted.")
-        save(result_image, result)
-        click.echo(f"Saved as {result_image}")
+        actual_path_to_result = save(path_to_result, result_image)
+        click.echo(f"Saved as {actual_path_to_result}")

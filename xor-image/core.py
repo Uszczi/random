@@ -1,26 +1,23 @@
 from functools import reduce
 
-
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 
 
-def xor(image_path, key_path) -> np.array:
+def xor(image_path: str, key_path: str) -> np.ndarray:
     image = read_image(image_path)
     key_image = read_image(key_path)
-    flat_key = key_image.reshape(-1)
 
+    flat_key = key_image.reshape(-1)
     flat_key = resize_flat(flat_key, reduce(lambda a, b: a * b, image.shape))
     key = flat_key.reshape(image.shape)
     result = image ^ key
-
-    # plt.imsave("encrypted.png", result, format="PNG")
     return result
 
 
-def read_image(path: str):
+def read_image(path: str) -> np.ndarray:
     def _read_png():
         image = Image.open(path)
         image = np.array(image)
@@ -37,7 +34,7 @@ def read_image(path: str):
             return _read_jpg()
         case "png":
             return _read_png()
-
+    raise Exception
 
 def resize_flat(array, target_len):
     current_size = array_size = len(array)
@@ -61,9 +58,11 @@ def save(path: str, image):
         plt.imsave(path, image, format="PNG")
 
     if path.endswith(".png"):
-        return _save()
+        _save()
+        return path
     elif path.endswith(".jpg") or path.endswith(".jpeg"):
         path = path.removesuffix(".jpg")
         path = path.removesuffix(".jpeg")
     path = path + ".png"
-    return _save()
+    _save()
+    return path
