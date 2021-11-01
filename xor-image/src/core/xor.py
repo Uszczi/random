@@ -3,7 +3,7 @@ from functools import reduce
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 import numpy as np
-from PIL import Image
+from PIL import Image  # type: ignore
 
 
 def xor(image_path: str, key_path: str) -> np.ndarray:
