@@ -1,5 +1,5 @@
-from ctypes import resize
 from functools import reduce
+
 
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
@@ -12,7 +12,7 @@ def xor(image_path, key_path) -> np.array:
     key_image = read_image(key_path)
     flat_key = key_image.reshape(-1)
 
-    flat_key = resize_flat(flat_key, reduce(lambda a,b: a * b, image.shape))
+    flat_key = resize_flat(flat_key, reduce(lambda a, b: a * b, image.shape))
     key = flat_key.reshape(image.shape)
     result = image ^ key
 
@@ -39,14 +39,12 @@ def read_image(path: str):
             return _read_png()
 
 
-
 def resize_flat(array, target_len):
     current_size = array_size = len(array)
     result = array.copy()
 
     if current_size > target_len:
         return result[:target_len]
-
 
     while current_size < target_len:
         difference = target_len - current_size
@@ -56,3 +54,16 @@ def resize_flat(array, target_len):
             result = np.append(result, array[:difference])
         current_size = len(result)
     return result
+
+
+def save(path: str, image):
+    def _save():
+        plt.imsave(path, image, format="PNG")
+
+    if path.endswith(".png"):
+        return _save()
+    elif path.endswith(".jpg") or path.endswith(".jpeg"):
+        path = path.removesuffix(".jpg")
+        path = path.removesuffix(".jpeg")
+    path = path + ".png"
+    return _save()
