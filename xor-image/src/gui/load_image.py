@@ -21,6 +21,7 @@ class LoadImage(QWidget):
 
         self.image_label = QLabel(image_text)
         self.image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.image_label.setScaledContents(True)
         self.image_label.setStyleSheet("background: #7c9c85")
         self.image_label.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
@@ -50,5 +51,16 @@ class LoadImage(QWidget):
                     self, "Image Viewer", "Cannot load %s." % file_name
                 )
                 return
-            self.image_label.setPixmap(QPixmap.fromImage(image))
+            pixmap = QPixmap.fromImage(image)
+            x = pixmap.size().width()
+            y = pixmap.size().height()
+            if (
+                x > self.image_label.size().width()
+                or y > self.image_label.size().width()
+            ):
+                self.image_label.setScaledContents(True)
+            else:
+                self.image_label.setScaledContents(False)
+
+            self.image_label.setPixmap(pixmap)
             function(file_name)
