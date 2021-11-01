@@ -3,7 +3,6 @@ from functools import reduce
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 import numpy as np
-from PIL import Image  # type: ignore
 
 
 def xor(image_path: str, key_path: str) -> np.ndarray:
@@ -19,8 +18,9 @@ def xor(image_path: str, key_path: str) -> np.ndarray:
 
 def read_image(path: str) -> np.ndarray:
     def _read_png() -> np.ndarray:
-        image: np.ndarray = Image.open(path)
-        image = np.array(image)
+        image: np.ndarray = mpimg.imread(path)
+        image = image * 255
+        image = image.astype(np.uint8)
         image = np.delete(image, -1, axis=2)
         return image
 
