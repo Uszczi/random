@@ -1,6 +1,7 @@
 import sys
-from dataclasses import field, dataclass
-from typing import Any
+from typing import Any, Callable
+
+import inject
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QImage, QPixmap
 from PyQt6.QtWidgets import (
@@ -15,17 +16,14 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-import inject
-from config import setup_app
 
-import core
-
-
-from state import GlobalState
+from src.config import setup_app
+from src.core import core
+from src.state import GlobalState
 
 
 class LoadImage(QWidget):
-    def __init__(self, image_text, button_function):
+    def __init__(self, image_text: str, button_function: Callable):
         super().__init__()
 
         self.image_label = QLabel(image_text)
@@ -39,12 +37,12 @@ class LoadImage(QWidget):
         layout.addWidget(self.image_label)
 
         self.button = QPushButton("Load image")
-        self.button.clicked.connect(lambda: self.open(button_function))
+        self.button.clicked.connect(lambda: self.open(button_function))  # type: ignore
         layout.addWidget(self.button)
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setLayout(layout)
 
-    def open(self, function) -> None:
+    def open(self, function: Callable) -> None:
         file_name, _ = QFileDialog.getOpenFileName(
             self, "QFileDialog.getOpenFileName()", "", "Images (*.png *.jpeg *.jpg)"
         )
@@ -61,7 +59,7 @@ class LoadImage(QWidget):
 
 
 class ResultImage(QWidget):
-    def __init__(self, global_state):
+    def __init__(self, global_state: GlobalState) -> None:
         super().__init__()
 
         self.image_label = QLabel("Result image")
@@ -75,13 +73,13 @@ class ResultImage(QWidget):
         layout.addWidget(self.image_label)
 
         self.button = QPushButton("Save image")
-        self.button.clicked.connect(lambda: self.save(global_state))
+        self.button.clicked.connect(lambda: self.save(global_state))  # type: ignore
         self.button.setDisabled(True)
         layout.addWidget(self.button)
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setLayout(layout)
 
-    def save(self, global_state) -> None:
+    def save(self, global_state: Any) -> None:
         file_name, _ = QFileDialog.getSaveFileName(
             self,
             "QFileDialog.getSaveFileName()",
@@ -93,15 +91,15 @@ class ResultImage(QWidget):
         q.setText(f"File {actual_file_name} saved.")
         q.exec()
 
-    def set_pixmap(self, pixmap):
+    def set_pixmap(self, pixmap: Any) -> None:
         self.image_label.setPixmap(QPixmap.fromImage(pixmap))
 
-    def activate_button(self):
+    def activate_button(self: Any) -> None:
         self.button.setDisabled(False)
 
 
 class MainWidget(QWidget):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         global_state = inject.instance(GlobalState)
         self.load_image = LoadImage("Image to process", global_state.set_image_path)
@@ -118,14 +116,14 @@ class MainWidget(QWidget):
 
 
 class Window(QMainWindow):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         main_widget = MainWidget()
         self.setCentralWidget(main_widget)
         self.resize(1600, 900)
 
 
-def main():
+def main() -> None:
     setup_app()
     app = QApplication(sys.argv)
     window = Window()

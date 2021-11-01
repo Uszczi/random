@@ -13,35 +13,41 @@ def xor(image_path: str, key_path: str) -> np.ndarray:
     flat_key = key_image.reshape(-1)
     flat_key = resize_flat(flat_key, reduce(lambda a, b: a * b, image.shape))
     key = flat_key.reshape(image.shape)
-    result = image ^ key
+    result: np.ndarray = image ^ key
     return result
 
 
 def read_image(path: str) -> np.ndarray:
-    def _read_png():
-        image = Image.open(path)
+    def _read_png() -> np.ndarray:
+        image: np.ndarray = Image.open(path)
         image = np.array(image)
         image = np.delete(image, -1, axis=2)
         return image
 
-    def _read_jpg():
-        image = mpimg.imread(path, format=format)
+    def _read_jpg() -> np.ndarray:
+        image: np.ndarray = mpimg.imread(path, format=format)  # type: ignore
         return image
 
     format = path.split(".")[-1]
-    match format:
-        case "jpg" | "jpeg":
-            return _read_jpg()
-        case "png":
-            return _read_png()
+    # match format:
+    #     case "jpg" | "jpeg":
+    #         return _read_jpg()
+    #     case "png":
+    #         return _read_png()
+    # raise Exception
+    if format == "jpg" or format == "jpeg":
+        return _read_jpg()
+    elif format == "png":
+        return _read_png()
     raise Exception
 
-def resize_flat(array, target_len):
+
+def resize_flat(array: np.ndarray, target_len: int) -> np.ndarray:
     current_size = array_size = len(array)
-    result = array.copy()
+    result: np.ndarray = array.copy()
 
     if current_size > target_len:
-        return result[:target_len]
+        return result[:target_len]  # type: ignore
 
     while current_size < target_len:
         difference = target_len - current_size
@@ -53,9 +59,9 @@ def resize_flat(array, target_len):
     return result
 
 
-def save(path: str, image):
-    def _save():
-        plt.imsave(path, image, format="PNG")
+def save(path: str, image: np.ndarray) -> str:
+    def _save() -> None:
+        plt.imsave(path, image, format="PNG")  # type: ignore
 
     if path.endswith(".png"):
         _save()

@@ -1,25 +1,25 @@
 import click
 
-from core import save, xor
-from gui import main as gui_main
-from timer import Timer
+from src.core.core import save, xor
+from src.gui.gui import main as gui_main
+from src.utils import Timer
 
 
 @click.group()
-def main():
+def main() -> None:
     pass
 
 
 @main.command()
-def gui():
+def gui() -> None:
     gui_main()
 
 
 @main.command()
-@click.argument("image_path")
-@click.argument("key_path")
-@click.argument("path_to_result")
-def cli(image_path, key_path, path_to_result):
+@click.argument("image_path", type=str)
+@click.argument("key_path", type=str)
+@click.argument("path_to_result", type=str)
+def cli(image_path: str, key_path: str, path_to_result: str) -> None:
     with Timer():
         click.echo("Encrypting.")
         result_image = xor(image_path, key_path)

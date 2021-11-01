@@ -1,7 +1,9 @@
 from dataclasses import dataclass, field
 from typing import Any
-import core
+
 from PyQt6.QtGui import QImage
+
+from src.core import core
 
 
 @dataclass
@@ -19,17 +21,17 @@ class GlobalState:
         self.key_path = path
         self._make_encryption()
 
-    def set_result_widget(self, widget):
+    def set_result_widget(self, widget: Any) -> None:
         self.widget_layout = widget
 
-    def _make_encryption(self):
+    def _make_encryption(self) -> None:
         if not self.image_path or not self.key_path:
             return
 
         image = core.xor(self.image_path, self.key_path)
         h, w, _ = image.shape
 
-        def f(_):
+        def f(_: Any) -> None:
             return
 
         result_image = QImage(
