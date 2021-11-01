@@ -1,0 +1,6 @@
+Pillow
+PyQt6
+click
+inject
+matplotlib
+numpy
