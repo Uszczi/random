@@ -3,7 +3,7 @@ from typing import Any
 
 from PyQt6.QtGui import QImage
 
-from src.core import core
+from src.core import xor
 
 
 @dataclass
@@ -28,7 +28,7 @@ class GlobalState:
         if not self.image_path or not self.key_path:
             return
 
-        image = core.xor(self.image_path, self.key_path)
+        image = xor.xor(self.image_path, self.key_path)
         h, w, _ = image.shape
 
         def f(_: Any) -> None:

@@ -1,7 +1,7 @@
 import click
 
-from src.core.core import save, xor
-from src.gui.gui import main as gui_main
+from src.core.xor import save, xor
+from src.gui import main as gui_main
 from src.utils import Timer
 
 

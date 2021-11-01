@@ -1,6 +1,6 @@
 import inject
 
-from src.state import GlobalState
+from src.gui.state import GlobalState
 
 
 def setup_app() -> inject.Injector:
