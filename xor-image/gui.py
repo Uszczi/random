@@ -18,8 +18,6 @@ from PyQt6.QtWidgets import (
 
 import core
 
-# TODO add dialog box for success
-# TODO Disable save button at start
 # TODO add injector
 
 
@@ -123,7 +121,10 @@ class ResultImage(QWidget):
             "",
             "Images (*.png *.jpeg *.jpg)",
         )
-        core.save(file_name, global_state.result_image)
+        actual_file_name = core.save(file_name, global_state.result_image)
+        q = QMessageBox()
+        q.setText(f"File {actual_file_name} saved.")
+        q.exec()
 
     def set_pixmap(self, pixmap):
         self.image_label.setPixmap(QPixmap.fromImage(pixmap))
