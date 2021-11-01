@@ -20,6 +20,7 @@ from PyQt6.QtWidgets import (
 from src.config import setup_app
 from src.core import core
 from src.state import GlobalState
+from src.utils.images import get_images_path
 
 
 class LoadImage(QWidget):
@@ -44,7 +45,10 @@ class LoadImage(QWidget):
 
     def open(self, function: Callable) -> None:
         file_name, _ = QFileDialog.getOpenFileName(
-            self, "QFileDialog.getOpenFileName()", "", "Images (*.png *.jpeg *.jpg)"
+            self,
+            "",
+            str(get_images_path()),
+            "Images (*.png *.jpeg *.jpg)",
         )
 
         if file_name:
@@ -82,10 +86,13 @@ class ResultImage(QWidget):
     def save(self, global_state: Any) -> None:
         file_name, _ = QFileDialog.getSaveFileName(
             self,
-            "QFileDialog.getSaveFileName()",
             "",
+            str(get_images_path()) + "/new.png",
             "Images (*.png *.jpeg *.jpg)",
         )
+        if not file_name:
+            return
+
         actual_file_name = core.save(file_name, global_state.result_image)
         q = QMessageBox()
         q.setText(f"File {actual_file_name} saved.")
