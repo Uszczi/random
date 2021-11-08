@@ -1,17 +1,18 @@
 from functools import reduce
 
-import matplotlib.image as mpimg
-import matplotlib.pyplot as plt
+import matplotlib.image as mpimg  # type: ignore
+import matplotlib.pyplot as plt  # type: ignore
 import numpy as np
 
 
 def xor(image_path: str, key_path: str) -> np.ndarray:
     image = read_image(image_path)
     key_image = read_image(key_path)
-
-    flat_key = key_image.reshape(-1)
-    flat_key = resize_flat(flat_key, reduce(lambda a, b: a * b, image.shape))
-    key = flat_key.reshape(image.shape)
+    h, w, _ = image.shape
+    key = resize_image(key_image, h, w)
+    # Uncomment those lines to see resized image.
+    # plt.imshow(key)
+    # plt.show()
     result: np.ndarray = image ^ key
     return result
 
@@ -42,20 +43,29 @@ def read_image(path: str) -> np.ndarray:
     raise Exception
 
 
-def resize_flat(array: np.ndarray, target_len: int) -> np.ndarray:
-    current_size = array_size = len(array)
-    result: np.ndarray = array.copy()
+def resize_image(image: np.ndarray, target_h: int, target_w: int) -> np.ndarray:
+    def _resize_by_axis(
+        array: np.ndarray, result: np.ndarray, target: int, axis: int
+    ) -> np.ndarray:
+        actual_size = result.shape[axis]
+        while target > actual_size:
+            difference = target - actual_size
+            if difference >= array.shape[axis]:
+                result = np.append(result, array.copy(), axis=axis)
+            else:
+                copy = np.delete(array, slice(difference, array.shape[axis]), axis=axis)
+                result = np.append(result, copy, axis=axis)
+            actual_size = result.shape[axis]
+        return result
 
-    if current_size > target_len:
-        return result[:target_len]  # type: ignore
+    result = image.copy()
+    if result.shape[0] > target_h:
+        result = np.delete(result, slice(target_h, result.shape[0]), axis=0)
+    if result.shape[1] > target_w:
+        result = np.delete(result, slice(target_w, result.shape[1]), axis=1)
 
-    while current_size < target_len:
-        difference = target_len - current_size
-        if array_size < difference:
-            result = np.append(result, array)
-        else:
-            result = np.append(result, array[:difference])
-        current_size = len(result)
+    result = _resize_by_axis(image, result, target_h, axis=0)
+    result = _resize_by_axis(result, result, target_w, axis=1)
     return result
 
 
