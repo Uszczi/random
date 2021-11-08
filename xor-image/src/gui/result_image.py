@@ -27,6 +27,7 @@ class ResultImage(QWidget):
         self.image_label.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
+        self.image_label.setScaledContents(True)
         self.setMaximumSize(500, 500)
         layout = QVBoxLayout()
         layout.addWidget(self.image_label)
