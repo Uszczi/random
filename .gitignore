@@ -3,3 +3,6 @@
 **.egg-info
 **.mypy_cache/
 **.vscode/
+
+
+.env_fish
